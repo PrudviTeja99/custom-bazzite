@@ -15,10 +15,19 @@ if [ -d "/ctx/modules" ]; then
     done
 fi
 
-# 3. Install packages defined in package manifest text files
+# 3. Remove packages specified in 00-remove.txt (if present)
+if [ -f "/ctx/packages/00-remove.txt" ]; then
+    echo "=== Removing packages listed in 00-remove.txt ==="
+    remove_pkgs=$(grep -v '^#' "/ctx/packages/00-remove.txt" | grep -v '^$' || true)
+    if [ -n "$remove_pkgs" ]; then
+        echo "$remove_pkgs" | xargs dnf5 remove -y
+    fi
+fi
+
+# 4. Install packages defined in package manifest text files
 if [ -d "/ctx/packages" ]; then
     for pkg_file in $(ls /ctx/packages/*.txt 2>/dev/null | sort); do
-        if [ -f "$pkg_file" ]; then
+        if [ "$pkg_file" != "/ctx/packages/00-remove.txt" ] && [ -f "$pkg_file" ]; then
             echo "=== Installing packages from manifest: $pkg_file ==="
             pkgs=$(grep -v '^#' "$pkg_file" | grep -v '^$' || true)
             if [ -n "$pkgs" ]; then
@@ -28,11 +37,11 @@ if [ -d "/ctx/packages" ]; then
     done
 fi
 
-# 4. Install standalone .rpm packages placed in /ctx/rpms/
+# 5. Install standalone .rpm packages placed in /ctx/rpms/
 if ls /ctx/rpms/*.rpm 1>/dev/null 2>&1; then
     echo "=== Installing standalone RPM packages from /ctx/rpms/ ==="
     dnf5 install -y /ctx/rpms/*.rpm
 fi
 
-# 5. Clean DNF metadata caches to keep container image minimal
+# 6. Clean DNF metadata caches to keep container image minimal
 dnf5 clean all

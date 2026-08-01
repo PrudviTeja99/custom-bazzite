@@ -1,0 +1,2 @@
+# Packages to remove from the base image
+lutris

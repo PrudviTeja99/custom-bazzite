@@ -1,0 +1,2 @@
+# General Applications
+brave-browser

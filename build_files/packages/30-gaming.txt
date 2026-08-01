@@ -1,0 +1,2 @@
+# Gaming Packages
+# List gaming-specific RPM packages below (e.g., mangohud, steam-devices)

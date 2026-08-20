@@ -81,10 +81,10 @@ jobs:
             ${DEFAULT_TAG}
 
       # This is optional, this provides smaller delta updates
-      - name: Rechunk with rpm-ostree
+      - name: Rechunk with Chunkah
         id: rechunk
         run: |
-          sudo -E $(command -v just) ostree-rechunk \
+          sudo -E $(command -v just) rechunk \
             ${IMAGE_NAME} \
             ${DEFAULT_TAG}
 
